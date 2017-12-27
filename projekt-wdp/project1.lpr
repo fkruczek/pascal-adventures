@@ -10,35 +10,35 @@ type
   end;
 //pierwszy sposob sortowania
 procedure dodaj_sortujac(var poczatek : Pstudent);
-var obecny, pom : Pstudent;
+var nowy, pom : Pstudent;
 begin
-  new(obecny);
+  new(nowy);
   writeln('Podaj imie: ');
-  readln(obecny^.imie);
+  readln(nowy^.imie);
   writeln('Podaj nazwisko: ');
-  readln(obecny^.nazwisko);
+  readln(nowy^.nazwisko);
   writeln('Podaj kierunek studiow: ');
-  readln(obecny^.kierunek_studiow);
+  readln(nowy^.kierunek_studiow);
   writeln('Podaj rok studiow: ');
-  readln(obecny^.rok_studiow);
-  obecny^.nastepny:=NIL;
+  readln(nowy^.rok_studiow);
+  nowy^.nastepny:=NIL;
   if poczatek=NIL then
-     poczatek:=obecny
+     poczatek:=nowy
   else begin
       pom:=poczatek;
-      if (obecny^.nazwisko<pom^.nazwisko) then
+      if (nowy^.nazwisko<pom^.nazwisko) then
         begin
-        poczatek:=obecny;
-        obecny^.nastepny:=pom;
+        poczatek:=nowy;
+        nowy^.nastepny:=pom;
         end else begin
-        while (pom^.nastepny <> NIL) and (obecny^.nazwisko<=pom^.nazwisko) do
+        while (nowy^.nazwisko<=pom^.nazwisko) and (pom^.nastepny <> NIL) do
               pom:=pom^.nastepny;
-        obecny^.nastepny:=pom^.nastepny;
-        pom^.nastepny:=obecny;
+        nowy^.nastepny:=pom^.nastepny;
+        pom^.nastepny:=nowy;
         end;
   end;
 end;
-}
+
 //drugi sposob sortowania
 procedure dodaj_sortujac2(var poczatek : Pstudent);
 var nowy, poprzedni, pom : Pstudent;
@@ -65,20 +65,22 @@ begin
   end;
 end;
 
-procedure wyswietl(var head : Pstudent);
+//wyswietlanie
+procedure wyswietl(var poczatek : Pstudent);
 begin
-  if head = NIL then
+  if poczatek = NIL then
      write('LISTA PUSTA')
   else begin
-    while (head <> NIL) do
+    while (poczatek <> NIL) do
     begin
-         writeln(head^.imie, ' ', head^.nazwisko,' ',head^.kierunek_studiow,' ',head^.rok_studiow);
-         head := head^.nastepny;
+         writeln(poczatek^.imie, ' ', poczatek^.nazwisko,' ',poczatek^.kierunek_studiow,' ',poczatek^.rok_studiow);
+         poczatek:= poczatek^.nastepny;
     end;
   end;
   readln;
 end;
 
+//program glowny
 var poczatek : Pstudent;
 begin
 poczatek:=NIL;
