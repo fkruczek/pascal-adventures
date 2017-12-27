@@ -8,7 +8,7 @@ type
     rok_studiow: byte;
     nastepny : Pstudent;
   end;
-
+//pierwszy sposob sortowania
 procedure dodaj_sortujac(var poczatek : Pstudent);
 var obecny, pom : Pstudent;
 begin
@@ -23,29 +23,54 @@ begin
   readln(obecny^.rok_studiow);
   obecny^.nastepny:=NIL;
   if poczatek=NIL then
-  poczatek:=obecny
-  else
-  begin
+     poczatek:=obecny
+  else begin
       pom:=poczatek;
       if (obecny^.nazwisko<pom^.nazwisko) then
         begin
         poczatek:=obecny;
-        obecny^.nastepny:=pom^.nastepny;
+        obecny^.nastepny:=pom;
         end else begin
         while (pom^.nastepny <> NIL) and (obecny^.nazwisko<=pom^.nazwisko) do
               pom:=pom^.nastepny;
         obecny^.nastepny:=pom^.nastepny;
         pom^.nastepny:=obecny;
         end;
-      end;
+  end;
+end;
+}
+//drugi sposob sortowania
+procedure dodaj_sortujac2(var poczatek : Pstudent);
+var nowy, poprzedni, pom : Pstudent;
+begin
+  new(nowy);
+  writeln('Podaj imie: ');
+  readln(nowy^.imie);
+  writeln('Podaj nazwisko: ');
+  readln(nowy^.nazwisko);
+  writeln('Podaj kierunek studiow: ');
+  readln(nowy^.kierunek_studiow);
+  writeln('Podaj rok studiow: ');
+  readln(nowy^.rok_studiow);
+  nowy^.nastepny:=NIL;
+  if poczatek=NIL then
+     poczatek:=nowy
+  else begin
+    poprzedni:=poczatek;
+    while (nowy^.nazwisko>=poprzedni^.nazwisko) and (poprzedni^.nastepny <> NIL) do
+          poprzedni:=poprzedni^.nastepny;
+    pom:=poprzedni^.nastepny;
+    poprzedni^.nastepny:=nowy;
+    nowy^.nastepny:=pom;
+  end;
 end;
 
-procedure wyswietl(head : Pstudent);
+procedure wyswietl(var head : Pstudent);
 begin
-  if head = nil then
-     write('brak elementow')
+  if head = NIL then
+     write('LISTA PUSTA')
   else begin
-    while head <> nil do
+    while (head <> NIL) do
     begin
          writeln(head^.imie, ' ', head^.nazwisko,' ',head^.kierunek_studiow,' ',head^.rok_studiow);
          head := head^.nastepny;
@@ -57,7 +82,6 @@ end;
 var poczatek : Pstudent;
 begin
 poczatek:=NIL;
-dodaj_sortujac(poczatek);
 dodaj_sortujac(poczatek);
 dodaj_sortujac(poczatek);
 wyswietl(poczatek);
