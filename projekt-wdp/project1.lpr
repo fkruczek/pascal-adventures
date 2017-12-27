@@ -1,4 +1,5 @@
 program project1;
+uses crt;
 type
   Pstudent = ^student;
   student = record
@@ -68,24 +69,40 @@ end;
 //wyswietlanie
 procedure wyswietl(var poczatek : Pstudent);
 begin
-  if poczatek = NIL then
-     write('LISTA PUSTA')
-  else begin
-    while (poczatek <> NIL) do
-    begin
-         writeln(poczatek^.imie, ' ', poczatek^.nazwisko,' ',poczatek^.kierunek_studiow,' ',poczatek^.rok_studiow);
-         poczatek:= poczatek^.nastepny;
-    end;
-  end;
-  readln;
+     clrscr;
+     if poczatek = NIL then writeln('LISTA PUSTA')
+     else begin
+       while (poczatek <> NIL) do
+             begin
+                 writeln(poczatek^.imie, ' ', poczatek^.nazwisko,' ',poczatek^.kierunek_studiow,' ',poczatek^.rok_studiow);
+                 poczatek:=poczatek^.nastepny;
+             end;
+     end;
+     readln;
+end;
+//usuwanie calej listy
+procedure usun_liste(var poczatek : Pstudent);
+var
+  pomocniczy : Pstudent;
+begin
+     if poczatek=NIL then writeln('LISTA PUSTA')
+     else begin
+       while poczatek<>NIL do begin
+          pomocniczy:=poczatek;
+          poczatek:=poczatek^.nastepny;
+          dispose(pomocniczy);
+       end;
+     end;
 end;
 
 //program glowny
 var poczatek : Pstudent;
 begin
-poczatek:=NIL;
-dodaj_sortujac(poczatek);
-dodaj_sortujac(poczatek);
-wyswietl(poczatek);
+  poczatek:=NIL;
+  dodaj_sortujac(poczatek);
+  dodaj_sortujac(poczatek);
+  wyswietl(poczatek);
+  usun_liste(poczatek);
+  wyswietl(poczatek);
 end.
 
