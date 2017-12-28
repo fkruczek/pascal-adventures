@@ -9,40 +9,10 @@ type
     rok_studiow: byte;
     nastepny : Pstudent;
   end;
-//pierwszy sposob sortowania
-procedure dodaj_sortujac(var poczatek : Pstudent);
-var nowy, pom : Pstudent;
-begin
-  new(nowy);
-  writeln('Podaj imie: ');
-  readln(nowy^.imie);
-  writeln('Podaj nazwisko: ');
-  readln(nowy^.nazwisko);
-  writeln('Podaj kierunek studiow: ');
-  readln(nowy^.kierunek_studiow);
-  writeln('Podaj rok studiow: ');
-  readln(nowy^.rok_studiow);
-  nowy^.nastepny:=NIL;
-  if poczatek=NIL then
-     poczatek:=nowy
-  else begin
-      pom:=poczatek;
-      if (nowy^.nazwisko<pom^.nazwisko) then
-        begin
-        poczatek:=nowy;
-        nowy^.nastepny:=pom;
-        end else begin
-        while (nowy^.nazwisko<=pom^.nazwisko) and (pom^.nastepny <> NIL) do
-              pom:=pom^.nastepny;
-        nowy^.nastepny:=pom^.nastepny;
-        pom^.nastepny:=nowy;
-        end;
-  end;
-end;
 
-//drugi sposob sortowania
-procedure dodaj_sortujac2(var poczatek : Pstudent);
-var nowy, poprzedni, pom : Pstudent;
+//dodaje element sortujac po nazwisku
+procedure dodaj_sortujac(var poczatek : Pstudent);
+var nowy, pomocniczy : Pstudent;
 begin
   new(nowy);
   writeln('Podaj imie: ');
@@ -54,28 +24,32 @@ begin
   writeln('Podaj rok studiow: ');
   readln(nowy^.rok_studiow);
   nowy^.nastepny:=NIL;
-  if poczatek=NIL then
-     poczatek:=nowy
-  else begin
-    poprzedni:=poczatek;
-    while (nowy^.nazwisko>=poprzedni^.nazwisko) and (poprzedni^.nastepny <> NIL) do
-          poprzedni:=poprzedni^.nastepny;
-    pom:=poprzedni^.nastepny;
-    poprzedni^.nastepny:=nowy;
-    nowy^.nastepny:=pom;
+  if (poczatek=NIL) or (nowy^.nazwisko<poczatek^.nazwisko) then //czy dodajemy na poczatek
+  begin
+     if(poczatek<>NIL) then nowy^.nastepny:=poczatek; //czy cos bylo na poczatku
+     poczatek:=nowy;
+  end else
+  begin
+       pomocniczy:=poczatek;
+       while (pomocniczy^.nastepny <> NIL) and (pomocniczy^.nastepny^.nazwisko<nowy^.nazwisko)do
+            pomocniczy:=pomocniczy^.nastepny;
+       nowy^.nastepny:=pomocniczy^.nastepny;
+       pomocniczy^.nastepny:=nowy;
   end;
 end;
 
 //wyswietlanie
 procedure wyswietl(var poczatek : Pstudent);
+var pomocniczy : Pstudent;
 begin
      clrscr;
-     if poczatek = NIL then writeln('LISTA PUSTA')
+     pomocniczy:=poczatek;
+     if pomocniczy = NIL then writeln('LISTA PUSTA')
      else begin
-       while (poczatek <> NIL) do
+       while (pomocniczy<> NIL) do
              begin
-                 writeln(poczatek^.imie, ' ', poczatek^.nazwisko,' ',poczatek^.kierunek_studiow,' ',poczatek^.rok_studiow);
-                 poczatek:=poczatek^.nastepny;
+                 writeln(pomocniczy^.imie, ' ', pomocniczy^.nazwisko,' ',pomocniczy^.kierunek_studiow,' ',pomocniczy^.rok_studiow);
+                 pomocniczy:=pomocniczy^.nastepny;
              end;
      end;
      readln;
@@ -95,12 +69,48 @@ begin
      end;
 end;
 
+//usuwanie wybranego
+procedure usun_wybrany(var poczatek : Pstudent);
+var
+  pomocniczy, pom2 : Pstudent;
+  sz_nazwisko : string[25];
+begin
+     if poczatek=NIL then writeln('LISTA PUSTA') else
+     begin
+         writeln('Podaj nazwisko do usuniecia');
+         readln(sz_nazwisko);
+         if poczatek^.nazwisko=sz_nazwisko then //czy usuwamy pierwszy element
+           begin
+               pomocniczy:=poczatek;
+               poczatek:=poczatek^.nastepny;
+               dispose(pomocniczy);
+           end else
+           begin
+               pomocniczy:=poczatek;
+               while (pomocniczy^.nastepny<>NIL) do
+               begin
+                    if pomocniczy^.nastepny^.nazwisko=sz_nazwisko then
+                    begin
+                         pom2:=pomocniczy^.nastepny^.nastepny;
+                         dispose(pomocniczy^.nastepny);
+                         pomocniczy^.nastepny:=pom2;
+                    end;
+                    pomocniczy:=pomocniczy^.nastepny;
+               end;
+           end;
+       end;
+     end;
+
 //program glowny
 var poczatek : Pstudent;
 begin
   poczatek:=NIL;
   dodaj_sortujac(poczatek);
   dodaj_sortujac(poczatek);
+  dodaj_sortujac(poczatek);
+  dodaj_sortujac(poczatek);
+  wyswietl(poczatek);
+  usun_wybrany(poczatek);
   wyswietl(poczatek);
   usun_liste(poczatek);
   wyswietl(poczatek);
