@@ -105,7 +105,8 @@ begin
                     end else pomocniczy:=pomocniczy^.nastepny; //tylko przejdz dalej
                end;
            end;
-         if czy_usunieto then writeln('Usunieto: ', sz_nazwisko);
+         if czy_usunieto then writeln('Usunieto: ', sz_nazwisko)
+         else writeln('Nie znaleziono szykanego elementu.');
      end;
      writeln('Aby przejsc dalej nacisnij dowolny klawisz');
      readln;
